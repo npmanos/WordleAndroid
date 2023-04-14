@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <LinearLayout>
+        <TextView android:id="@+id/textView11" style="@style/text_view"/>
+        <TextView android:id="@+id/textView12" style="@style/text_view"/>
+        <TextView android:id="@+id/textView13" style="@style/text_view"/>
+        <TextView android:id="@+id/textView14" style="@style/text_view"/>
+        <TextView android:id="@+id/textView15" style="@style/text_view"/>
+    </LinearLayout>
+
+    <LinearLayout>
+        <TextView android:id="@+id/textView21" style="@style/text_view"/>
+        <TextView android:id="@+id/textView22" style="@style/text_view"/>
+        <TextView android:id="@+id/textView23" style="@style/text_view"/>
+        <TextView android:id="@+id/textView24" style="@style/text_view"/>
+        <TextView android:id="@+id/textView25" style="@style/text_view"/>
+    </LinearLayout>
+    <LinearLayout>
+        <TextView android:id="@+id/textView31" style="@style/text_view"/>
+        <TextView android:id="@+id/textView32" style="@style/text_view"/>
+        <TextView android:id="@+id/textView33" style="@style/text_view"/>
+        <TextView android:id="@+id/textView34" style="@style/text_view"/>
+        <TextView android:id="@+id/textView35" style="@style/text_view"/>
+    </LinearLayout>
+    <LinearLayout>
+        <TextView android:id="@+id/textView41" style="@style/text_view"/>
+        <TextView android:id="@+id/textView42" style="@style/text_view"/>
+        <TextView android:id="@+id/textView43" style="@style/text_view"/>
+        <TextView android:id="@+id/textView44" style="@style/text_view"/>
+        <TextView android:id="@+id/textView45" style="@style/text_view"/>
+    </LinearLayout>
+    <LinearLayout>
+        <TextView android:id="@+id/textView51" style="@style/text_view"/>
+        <TextView android:id="@+id/textView52" style="@style/text_view"/>
+        <TextView android:id="@+id/textView53" style="@style/text_view"/>
+        <TextView android:id="@+id/textView54" style="@style/text_view"/>
+        <TextView android:id="@+id/textView55" style="@style/text_view"/>
+    </LinearLayout>
+    <LinearLayout>
+        <TextView android:id="@+id/textView61" style="@style/text_view"/>
+        <TextView android:id="@+id/textView62" style="@style/text_view"/>
+        <TextView android:id="@+id/textView63" style="@style/text_view"/>
+        <TextView android:id="@+id/textView64" style="@style/text_view"/>
+        <TextView android:id="@+id/textView65" style="@style/text_view"/>
+    </LinearLayout>
+
+    <TableRow><LinearLayout style="@style/virtual_keyboard">
+            <TextView android:id="@+id/message" style="@style/text_message" />
+    </LinearLayout></TableRow>
+
+    <!-- Custom virtual keyboard to highlight status of each letter -->
+    <TableRow><LinearLayout style="@style/virtual_keyboard">
+            <Button android:id="@+id/buttonQ" style="@style/button" android:text="Q" />
+            <Button android:id="@+id/buttonW" style="@style/button" android:text="W" />
+            <Button android:id="@+id/buttonE" style="@style/button" android:text="E" />
+            <Button android:id="@+id/buttonR" style="@style/button" android:text="R" />
+            <Button android:id="@+id/buttonT" style="@style/button" android:text="T" />
+            <Button android:id="@+id/buttonY" style="@style/button" android:text="Y" />
+            <Button android:id="@+id/buttonU" style="@style/button" android:text="U" />
+            <Button android:id="@+id/buttonI" style="@style/button" android:text="I" />
+            <Button android:id="@+id/buttonO" style="@style/button" android:text="O" />
+            <Button android:id="@+id/buttonP" style="@style/button" android:text="P" />
+    </LinearLayout></TableRow>
+    <TableRow><LinearLayout style="@style/virtual_keyboard">
+            <Button android:id="@+id/buttonA" style="@style/button" android:text="A" />
+            <Button android:id="@+id/buttonS" style="@style/button" android:text="S" />
+            <Button android:id="@+id/buttonD" style="@style/button" android:text="D" />
+            <Button android:id="@+id/buttonF" style="@style/button" android:text="F" />
+            <Button android:id="@+id/buttonG" style="@style/button" android:text="G" />
+            <Button android:id="@+id/buttonH" style="@style/button" android:text="H" />
+            <Button android:id="@+id/buttonJ" style="@style/button" android:text="J" />
+            <Button android:id="@+id/buttonK" style="@style/button" android:text="K" />
+            <Button android:id="@+id/buttonL" style="@style/button" android:text="L"/>
+    </LinearLayout></TableRow>
+    <TableRow><LinearLayout style="@style/virtual_keyboard">
+            <Button android:id="@+id/buttonEnter" style="@style/button_enter" android:text="&#x2713;" />
+            <Button android:id="@+id/buttonZ" style="@style/button" android:text="Z" />
+            <Button android:id="@+id/buttonX" style="@style/button" android:text="X" />
+            <Button android:id="@+id/buttonC" style="@style/button" android:text="C" />
+            <Button android:id="@+id/buttonV" style="@style/button" android:text="V" />
+            <Button android:id="@+id/buttonB" style="@style/button" android:text="B" />
+            <Button android:id="@+id/buttonN" style="@style/button" android:text="N" />
+            <Button android:id="@+id/buttonM" style="@style/button" android:text="M" />
+            <Button android:id="@+id/buttonBack" style="@style/button_backspace" android:text="&#x232b;" />
+    </LinearLayout></TableRow>
+</TableLayout>
