@@ -13,21 +13,12 @@ const val ANSI_GREEN = "\u001B[42m"  // Green background color
 const val ANSI_YELLOW = "\u001B[43m" // Yellow background color
 const val ANSI_BLACK = "\u001B[40m"  // Black background color
 class MainActivity : AppCompatActivity() {
-    var currentGuess = ""
+    private lateinit var gameManager: GameManager
 
     @SuppressLint("DiscouragedApi")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        for (letter in Char(0x41)..Char(0x5A)) {
-            val keyId = resources.getIdentifier("button$letter", "id", packageName)
-            val kbKey= findViewById<Button>(keyId)
-
-            kbKey.setOnClickListener {
-                if (currentGuess.length < 5) currentGuess += letter
-            }
-        }
 
         val wordList = BufferedReader(
             InputStreamReader(
@@ -37,12 +28,29 @@ class MainActivity : AppCompatActivity() {
         )
         ).readLines()
 
-        val gameManager = GameManager(wordList)
+        gameManager = GameManager(wordList)
+
+        for (letter in Char(0x41)..Char(0x5A)) {
+            val keyId = resources.getIdentifier("button$letter", "id", packageName)
+            val kbKey= findViewById<Button>(keyId)
+
+            kbKey.setOnClickListener {
+                gameManager.currentGuess += letter
+            }
+        }
     }
 }
 
-private class GameManager(val wordList: List<String>) {
+private class GameManager(private val wordList: List<String>) {
     enum class Guess { RIGHT, WRONG, MISPLACED } // Use this to return guess to UI with a map of Char -> Guess.whatever
+
+    var currentGuess: String = ""
+        set(value) {
+            if (value.length <= 5) field = value
+        }
+
+    var guessCount = 0
+        private set
 
     /**
      * Function selectWord() utilizes the random class to "pick" a random word from the list of words(wordList)
@@ -53,15 +61,15 @@ private class GameManager(val wordList: List<String>) {
      * Function legitGuess() checks to see if the user's guess is a valid guess, by checking if the guess
      * is in the list of words(wordList)
      */
-    fun legitGuess(guess: String): Boolean = guess.lowercase() in wordList
+    fun isGuessLegit(): Boolean = currentGuess.lowercase() in wordList
 
     /**
      * Function countCharacterOccurrences takes in a String(str) and returns a map(charactersCounted),
      * where the keys are the characters in str, and the values are the number of times that character appears
      */
-    fun countCharacterOccurrences(str: String): Map<Char, Int> {
+    private fun countCharacterOccurrences(selectedWord: String): MutableMap<Char, Int> {
         val charactersCounted = mutableMapOf<Char, Int>()
-        for (char in str) {
+        for (char in selectedWord) {
             when {
                 charactersCounted.containsKey(char) -> charactersCounted[char] =
                     charactersCounted[char]!! + 1
@@ -77,53 +85,52 @@ private class GameManager(val wordList: List<String>) {
      * Function gameState() takes in the user's guess and the target word, and returns a color coded version of the
      * guess based on the rules of Wordle.
      */
-    fun gameState(guess: String, word: String): Pair<String, ArrayList<Guess>> {
-        //TODO change to UI
+    fun submitGuess(): Pair<String, ArrayList<Guess>> {
+        check(isGuessLegit()) { "Current guess must be 5 characters long before submitting." }
 
-        val mapOfWord = countCharacterOccurrences(word).toMutableMap()
+        val mapOfWord = countCharacterOccurrences(selectedWord)
 
         val colorCodedUI = ArrayList<Guess>(5)
 
         for (i in 0..4) {
-            if (guess[i] == word[i]) {
+            if (currentGuess[i] == selectedWord[i]) {
                 colorCodedUI[i] = Guess.RIGHT
-                mapOfWord[word[i]] = mapOfWord[word[i]]!! - 1
+                mapOfWord[selectedWord[i]] = mapOfWord[selectedWord[i]]!! - 1
             }
         }
         for (i in 0..4) {
-            if ((guess[i] in mapOfWord) && mapOfWord[guess[i]] != 0) {
+            if ((currentGuess[i] in mapOfWord) && mapOfWord[currentGuess[i]] != 0) {
                 colorCodedUI[i] = Guess.MISPLACED
-                mapOfWord[guess[i]] = mapOfWord[guess[i]]!! - 1
-            } else if ((guess[i] !in mapOfWord)) {
+                mapOfWord[currentGuess[i]] = mapOfWord[currentGuess[i]]!! - 1
+            } else if ((currentGuess[i] !in mapOfWord)) {
                 colorCodedUI[i] = Guess.WRONG
             }
         }
 
-        return word to colorCodedUI
+        return selectedWord to colorCodedUI
     }
 
-    /**
-     * Function makeGuess takes in the user's guess and target word,and has the user guess again if the user's guess
-     * is invalid.
-     */
-    fun makeGuess(word: String, guess: String) {
-        //TODO change to prompt for input from app keyboard and prints in app
-        when (legitGuess(guess)) {
-            false -> {
-                println("Invalid word, please guess again")
-                val guessAlt = readln()
-                makeGuess(word, guessAlt)
-            }
-            true -> println(gameState(guess, word))
-        }
-
-    }
+//    /**
+//     * Function makeGuess takes in the user's guess and target word,and has the user guess again if the user's guess
+//     * is invalid.
+//     */
+//    fun makeGuess(word: String, guess: String) {
+//        //TODO change to prompt for input from app keyboard and prints in app
+//        when (isGuessLegit(guess)) {
+//            false -> {
+//                println("Invalid word, please guess again")
+//                val guessAlt = readln()
+//                makeGuess(word, guessAlt)
+//            }
+//            true -> println(submitGuess(guess, word))
+//        }
+//
+//    }
 
     /**
      * Function gameOver checks to see if the user has won, if they have, they are congratulated and the function
      * returns True, if not it returns False.
      */
-    fun gameOver(userInput: String, word: String): Boolean {
-        return userInput == word
-    }
+    val gameOver: Boolean
+        get() = guessCount == 5 || currentGuess == selectedWord
 }
