@@ -29,6 +29,8 @@ class MainActivity : AppCompatActivity() {
 }
 
 private class GameManager(val wordList: List<String>) {
+    enum class Guess { RIGHT, WRONG, MISPLACED } // Use this to return guess to UI with a map of Char -> Guess.whatever
+
     /**
      * Function selectWord() utilizes the random class to "pick" a random word from the list of words(wordList)
      */
@@ -65,36 +67,29 @@ private class GameManager(val wordList: List<String>) {
      * Function gameState() takes in the user's guess and the target word, and returns a color coded version of the
      * guess based on the rules of Wordle.
      */
-    fun gameState(guess: String, word: String): String {
+    fun gameState(guess: String, word: String): Pair<String, ArrayList<Guess>> {
         //TODO change to UI
 
-        val colorCoded = Array(5) { " " }
         val mapOfWord = countCharacterOccurrences(word).toMutableMap()
+
+        val colorCodedUI = ArrayList<Guess>(5)
+
         for (i in 0..4) {
             if (guess[i] == word[i]) {
-                colorCoded[i] = "${ANSI_GREEN}${word[i]}${ANSI_RESET}"
+                colorCodedUI[i] = Guess.RIGHT
                 mapOfWord[word[i]] = mapOfWord[word[i]]!! - 1
             }
         }
         for (i in 0..4) {
             if ((guess[i] in mapOfWord) && mapOfWord[guess[i]] != 0) {
-                colorCoded[i] = "${ANSI_YELLOW}${guess[i]}${ANSI_RESET}"
+                colorCodedUI[i] = Guess.MISPLACED
                 mapOfWord[guess[i]] = mapOfWord[guess[i]]!! - 1
             } else if ((guess[i] !in mapOfWord)) {
-                colorCoded[i] = "${ANSI_BLACK}${guess[i]}${ANSI_RESET}"
+                colorCodedUI[i] = Guess.WRONG
             }
         }
 
-
-        var colorCodedWord = ""
-        for (i in 0..4) {
-            if (colorCoded[i] == " ") {
-                colorCoded[i] = "${ANSI_BLACK}${guess[i]}${ANSI_RESET}"
-            }
-            colorCodedWord += colorCoded[i]
-        }
-
-        return (colorCodedWord)
+        return word to colorCodedUI
     }
 
     /**
