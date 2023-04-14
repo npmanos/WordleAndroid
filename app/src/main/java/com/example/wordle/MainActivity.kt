@@ -97,6 +97,7 @@ private class GameManager(val wordList: List<String>) {
      * is invalid.
      */
     fun makeGuess(word: String, guess: String) {
+        //TODO change to prompt for input from app keyboard and prints in app
         when (legitGuess(guess)) {
             false -> {
                 println("Invalid word, please guess again")
@@ -113,11 +114,6 @@ private class GameManager(val wordList: List<String>) {
      * returns True, if not it returns False.
      */
     fun gameOver(userInput: String, word: String): Boolean {
-        return if (userInput == word) {
-            println("Congratulations!  You are a winner!")
-            true
-        } else {
-            false
-        }
+        return userInput == word
     }
 }
