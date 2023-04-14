@@ -1,9 +1,10 @@
 package com.example.wordle
 
+import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Button
 import java.io.BufferedReader
-import java.io.File
 import java.io.InputStreamReader
 import kotlin.random.Random
 
@@ -12,9 +13,21 @@ const val ANSI_GREEN = "\u001B[42m"  // Green background color
 const val ANSI_YELLOW = "\u001B[43m" // Yellow background color
 const val ANSI_BLACK = "\u001B[40m"  // Black background color
 class MainActivity : AppCompatActivity() {
+    var currentGuess = ""
+
+    @SuppressLint("DiscouragedApi")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        for (letter in Char(0x41)..Char(0x5A)) {
+            val keyId = resources.getIdentifier("button$letter", "id", packageName)
+            val kbKey= findViewById<Button>(keyId)
+
+            kbKey.setOnClickListener {
+                if (currentGuess.length < 5) currentGuess += letter
+            }
+        }
 
         val wordList = BufferedReader(
             InputStreamReader(
@@ -34,16 +47,13 @@ private class GameManager(val wordList: List<String>) {
     /**
      * Function selectWord() utilizes the random class to "pick" a random word from the list of words(wordList)
      */
-    private val selectedWord = wordList[Random.nextInt(wordList.size)].uppercase()
+    private val selectedWord = wordList[Random.nextInt(wordList.size)].lowercase()
 
     /**
      * Function legitGuess() checks to see if the user's guess is a valid guess, by checking if the guess
      * is in the list of words(wordList)
      */
-    fun legitGuess(guess: String): Boolean = when (guess) {
-        in wordList -> true
-        else -> false
-    }
+    fun legitGuess(guess: String): Boolean = guess.lowercase() in wordList
 
     /**
      * Function countCharacterOccurrences takes in a String(str) and returns a map(charactersCounted),
