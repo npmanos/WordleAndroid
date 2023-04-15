@@ -3,11 +3,13 @@ package com.example.wordle
 import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import androidx.annotation.ColorRes
 import java.io.BufferedReader
 import java.io.InputStreamReader
+import kotlin.random.Random
 import com.example.wordle.GameManager.Result as Result
 
 class MainActivity : AppCompatActivity() {
@@ -28,6 +30,7 @@ class MainActivity : AppCompatActivity() {
         ).readLines()
 
         gameManager = GameManager(wordList)
+        findViewById<TextView>(R.id.message).text = "The word is ${gameManager.selectedWord.lowercase()}"
 
         val enterKey = findViewById<Button>(R.id.buttonEnter)
         val backspaceKey = findViewById<Button>(R.id.buttonBack)
@@ -39,6 +42,8 @@ class MainActivity : AppCompatActivity() {
 
                 enterKey.isEnabled = false
                 backspaceKey.isEnabled = false
+            } else {
+                findViewById<TextView>(R.id.message).text = "Not a word"
             }
         }
 
@@ -98,21 +103,32 @@ class MainActivity : AppCompatActivity() {
 
             val (letter, result) = resultPair
 
-            getCharBox(gameManager.guessCount, idx + 1).setBackgroundResource(result.bgColor)
+            getCharBox(gameManager.guessCount, idx + 1).apply {
+                backgroundTintList = getColorStateList(result.bgColor)
+                setTextColor(resources.getColor(R.color.white, theme))
+            }
 
             if (result.priority > (kbResults[letter]?.priority ?: -1)) {
                 kbResults[letter] = result
-                getLetterKey(letter).backgroundTintList = getColorStateList(result.bgColor)
+                getLetterKey(letter).apply {
+                    backgroundTintList = getColorStateList(result.bgColor)
+                    setTextColor(resources.getColor(R.color.white, theme))
+                }
             }
         }
+
+        if (gameManager.gameOver) endGame()
     }
 
-    private fun onGameEnd() {
+    private fun endGame() {
         getAllLetterKeys().forEach {
             it.isEnabled = false
         }
 
+        findViewById<Button>(R.id.buttonEnter).isEnabled = false
+        findViewById<Button>(R.id.buttonBack).isEnabled = false
 
+        findViewById<TextView>(R.id.message).text = if (gameManager.guessCount < 5) "You win!" else "The word was ${gameManager.selectedWord.lowercase()}"
     }
 }
 
@@ -134,7 +150,7 @@ private class GameManager(private val wordList: List<String>) {
     /**
      * Function selectWord() utilizes the random class to "pick" a random word from the list of words(wordList)
      */
-    private val selectedWord = "SLATE"//wordList[Random.nextInt(wordList.size)].uppercase()
+    val selectedWord = "QUITE"//wordList[Random.nextInt(wordList.size)].uppercase().also { Log.d(".example.wordle", it) }
 
     /**
      * Function legitGuess() checks to see if the user's guess is a valid guess, by checking if the guess
@@ -186,6 +202,8 @@ private class GameManager(private val wordList: List<String>) {
             }
         }
 
+        gameOver = guessCount == 5 || currentGuess == selectedWord
+
         currentGuess = ""
         guessCount++
 
@@ -196,8 +214,8 @@ private class GameManager(private val wordList: List<String>) {
      * Function gameOver checks to see if the user has won, if they have, they are congratulated and the function
      * returns True, if not it returns False.
      */
-    val gameOver: Boolean
-        get() = guessCount == 5 || currentGuess == selectedWord
+    var gameOver: Boolean = false
+        private set
 }
 
 operator fun String.dec() = if (isNotEmpty()) slice(0 until (length - 1)) else this
