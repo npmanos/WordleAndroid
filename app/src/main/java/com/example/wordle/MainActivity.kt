@@ -150,7 +150,7 @@ private class GameManager(private val wordList: List<String>) {
     /**
      * Function selectWord() utilizes the random class to "pick" a random word from the list of words(wordList)
      */
-    val selectedWord = "QUITE"//wordList[Random.nextInt(wordList.size)].uppercase().also { Log.d(".example.wordle", it) }
+    val selectedWord = wordList[Random.nextInt(wordList.size)].uppercase().also { Log.d(".example.wordle", it) }
 
     /**
      * Function legitGuess() checks to see if the user's guess is a valid guess, by checking if the guess
