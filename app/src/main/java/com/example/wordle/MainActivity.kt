@@ -135,8 +135,8 @@ class MainActivity : AppCompatActivity() {
 private class GameManager(private val wordList: List<String>) {
     enum class Result(val priority: Int, @ColorRes val bgColor: Int) {
         WRONG(0, R.color.gray),
-        RIGHT(1, R.color.green),
-        MISPLACED(2, R.color.yellow)
+        RIGHT(2, R.color.green),
+        MISPLACED(1, R.color.yellow)
     }
 
     var currentGuess: String = ""
