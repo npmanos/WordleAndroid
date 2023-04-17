@@ -128,15 +128,15 @@ class MainActivity : AppCompatActivity() {
         findViewById<Button>(R.id.buttonEnter).isEnabled = false
         findViewById<Button>(R.id.buttonBack).isEnabled = false
 
-        findViewById<TextView>(R.id.message).text = if (gameManager.guessCount < 5) "You win!" else "The word was ${gameManager.selectedWord.lowercase()}"
+        findViewById<TextView>(R.id.message).text = if (gameManager.guessCount < 6) "You win!" else "The word was ${gameManager.selectedWord.lowercase()}"
     }
 }
 
 private class GameManager(private val wordList: List<String>) {
     enum class Result(val priority: Int, @ColorRes val bgColor: Int) {
         WRONG(0, R.color.gray),
-        RIGHT(1, R.color.green),
-        MISPLACED(2, R.color.yellow)
+        RIGHT(2, R.color.green),
+        MISPLACED(1, R.color.yellow)
     }
 
     var currentGuess: String = ""
@@ -191,13 +191,10 @@ private class GameManager(private val wordList: List<String>) {
             if (currentGuess[i] == selectedWord[i]) {
                 result[i] = currentGuess[i] to Result.RIGHT
                 mapOfWord[selectedWord[i]] = mapOfWord[selectedWord[i]]!! - 1
-            }
-        }
-        for (i in 0..4) {
-            if ((currentGuess[i] in mapOfWord) && mapOfWord[currentGuess[i]] != 0) {
+            } else if ((currentGuess[i] in mapOfWord) && mapOfWord[currentGuess[i]] != 0) {
                 result[i] = currentGuess[i] to Result.MISPLACED
                 mapOfWord[currentGuess[i]] = mapOfWord[currentGuess[i]]!! - 1
-            } else if ((currentGuess[i] !in mapOfWord)) {
+            } else {
                 result[i] = currentGuess[i] to Result.WRONG
             }
         }
