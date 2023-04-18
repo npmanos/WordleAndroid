@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import androidx.annotation.ColorRes
@@ -36,38 +37,44 @@ class MainActivity : AppCompatActivity() {
         val backspaceKey = findViewById<Button>(R.id.buttonBack)
 
         enterKey.isEnabled = gameManager.currentGuess.length == 5
-        enterKey.setOnClickListener {
-            if (gameManager.isGuessLegit()) {
-                handleGuessResult(gameManager.submitGuess())
+        backspaceKey.isEnabled = gameManager.currentGuess.isNotEmpty()
+    }
 
-                enterKey.isEnabled = false
-                backspaceKey.isEnabled = false
-            } else {
-                findViewById<TextView>(R.id.message).text = "Not a word"
-            }
-        }
+    fun letterHandler(kbKey: View) {
+        kbKey as Button
 
-        backspaceKey.setOnClickListener {
-            gameManager.currentGuess--
-            getCharBox(gameManager.guessCount + 1, gameManager.currentGuess.length + 1)
-                .text = ""
+        if (gameManager.currentGuess.length == 5) return
+
+        gameManager.currentGuess += kbKey.text
+
+        getCharBox(gameManager.guessCount + 1, gameManager.currentGuess.length).text = kbKey.text
+
+        findViewById<Button>(R.id.buttonEnter).isEnabled = gameManager.currentGuess.length == 5
+        findViewById<Button>(R.id.buttonBack).isEnabled = gameManager.currentGuess.isNotEmpty()
+    }
+
+    fun enterHandler(enterKey: View) {
+        enterKey as Button
+
+        if (gameManager.isGuessLegit()) {
+            handleGuessResult(gameManager.submitGuess())
 
             enterKey.isEnabled = false
-            backspaceKey.isEnabled = gameManager.currentGuess.isNotEmpty()
+            findViewById<Button>(R.id.buttonBack).isEnabled = false
+        } else {
+            findViewById<TextView>(R.id.message).text = "Not a word"
         }
+    }
 
-        for (letter in Char(0x41)..Char(0x5A)) {
-            getLetterKey(letter).setOnClickListener {
-                if (gameManager.currentGuess.length == 5) return@setOnClickListener
+    fun backspaceHandler(backspaceKey: View) {
+        backspaceKey as Button
 
-                gameManager.currentGuess += letter
+        gameManager.currentGuess--
+        getCharBox(gameManager.guessCount + 1, gameManager.currentGuess.length + 1)
+            .text = ""
 
-                getCharBox(gameManager.guessCount + 1, gameManager.currentGuess.length).text = letter.toString()
-
-                enterKey.isEnabled = gameManager.currentGuess.length == 5
-                backspaceKey.isEnabled = gameManager.currentGuess.isNotEmpty()
-            }
-        }
+        findViewById<Button>(R.id.buttonEnter).isEnabled = false
+        backspaceKey.isEnabled = gameManager.currentGuess.isNotEmpty()
     }
 
     private fun getLetterKey(letter: Char): Button {
