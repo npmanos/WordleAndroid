@@ -206,10 +206,9 @@ private class GameManager(private val wordList: List<String>) {
             }
         }
 
-        gameOver = guessCount == 5 || currentGuess == selectedWord
-
-        currentGuess = ""
         guessCount++
+        gameOver = guessCount == 6 || currentGuess == selectedWord
+        currentGuess = ""
 
         return result
     }
