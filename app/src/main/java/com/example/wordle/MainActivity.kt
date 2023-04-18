@@ -57,6 +57,7 @@ class MainActivity : AppCompatActivity() {
         enterKey as Button
 
         if (gameManager.isGuessLegit()) {
+            findViewById<TextView>(R.id.message).text = "The word is ${gameManager.selectedWord.lowercase()}"
             handleGuessResult(gameManager.submitGuess())
 
             enterKey.isEnabled = false
