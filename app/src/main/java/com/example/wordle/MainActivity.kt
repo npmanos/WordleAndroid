@@ -33,8 +33,9 @@ class MainActivity : AppCompatActivity() {
         gameManager = GameManager(wordList)
         findViewById<TextView>(R.id.message).text = "The word is ${gameManager.selectedWord.lowercase()}"
 
-        val enterKey = findViewById<Button>(R.id.buttonEnter)
-        val backspaceKey = findViewById<Button>(R.id.buttonBack)
+        // Display the answer for debug purposes
+        findViewById<TextView>(R.id.message).text =
+            "The word is ${gameManager.selectedWord.lowercase()}"
 
         enterKey.isEnabled = gameManager.currentGuess.length == 5
         backspaceKey.isEnabled = gameManager.currentGuess.isNotEmpty()
@@ -49,8 +50,8 @@ class MainActivity : AppCompatActivity() {
 
         getCharBox(gameManager.guessCount + 1, gameManager.currentGuess.length).text = kbKey.text
 
-        findViewById<Button>(R.id.buttonEnter).isEnabled = gameManager.currentGuess.length == 5
-        findViewById<Button>(R.id.buttonBack).isEnabled = gameManager.currentGuess.isNotEmpty()
+        enterKey.isEnabled = gameManager.currentGuess.length == 5
+        backspaceKey.isEnabled = gameManager.currentGuess.isNotEmpty()
     }
 
     fun enterHandler(enterKey: View) {
@@ -61,7 +62,7 @@ class MainActivity : AppCompatActivity() {
             handleGuessResult(gameManager.submitGuess())
 
             enterKey.isEnabled = false
-            findViewById<Button>(R.id.buttonBack).isEnabled = false
+            backspaceKey.isEnabled = false
         } else {
             findViewById<TextView>(R.id.message).text = "Not a word"
         }
@@ -74,7 +75,7 @@ class MainActivity : AppCompatActivity() {
         getCharBox(gameManager.guessCount + 1, gameManager.currentGuess.length + 1)
             .text = ""
 
-        findViewById<Button>(R.id.buttonEnter).isEnabled = false
+        enterKey.isEnabled = false
         backspaceKey.isEnabled = gameManager.currentGuess.isNotEmpty()
     }
 
@@ -133,8 +134,8 @@ class MainActivity : AppCompatActivity() {
             it.isEnabled = false
         }
 
-        findViewById<Button>(R.id.buttonEnter).isEnabled = false
-        findViewById<Button>(R.id.buttonBack).isEnabled = false
+        enterKey.isEnabled = false
+        backspaceKey.isEnabled = false
 
         findViewById<TextView>(R.id.message).text = if (gameManager.guessCount < 6) "You win!" else "The word was ${gameManager.selectedWord.lowercase()}"
     }
